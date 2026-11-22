@@ -1,0 +1,512 @@
+/* Notebook — Marinara's own colours (its theme variables), so the panel follows whatever theme is on. */
+
+.nb-tab[hidden],
+[data-nb-topbtn][hidden],
+.nb-panel[hidden],
+.nb-panel [hidden] {
+  display: none !important;
+}
+
+/* ---------- the tab at the right edge (desktop), under Offstage's tab (top 42%) ---------- */
+.nb-tab {
+  position: fixed;
+  right: 0;
+  top: 60%;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* reads top to bottom, like Offstage's tab (Leah 22.11) */
+  writing-mode: vertical-rl;
+  padding: 14px 9px;
+  border: 1px solid var(--border, #333);
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+  background: var(--card, #141414);
+  color: var(--foreground, #ddd);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  opacity: 0.8;
+  /* dragged up and down the edge (the script sets top): a finger drag must not scroll the page */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.nb-tab:hover,
+.nb-tab[aria-pressed="true"],
+.nb-tab.is-dragging {
+  opacity: 1;
+}
+.nb-tab.is-dragging {
+  cursor: grabbing;
+}
+.nb-tab svg {
+  width: 16px;
+  height: 16px;
+}
+@media (max-width: 767px) {
+  .nb-tab {
+    display: none !important;
+  }
+}
+/* touch tablets: Marinara shows its panels over the whole chat there — the tab would lie over the panel rows */
+html:has(main[data-shell-overlay-mode="true"]):has(:is(.mari-sidebar, .mari-right-panel)) .nb-tab {
+  visibility: hidden;
+}
+
+/* ---------- the phone button in the top bar (classes copied from a neighbour by the script) ---------- */
+[data-nb-topbtn] {
+  order: 2;
+  margin-left: auto;
+}
+.kulisy-topbtn ~ [data-nb-topbtn],
+.cl-spark ~ [data-nb-topbtn] {
+  margin-left: 0;
+}
+[data-nb-topbtn] svg {
+  width: 15px;
+  height: 15px;
+}
+[data-nb-topbtn][aria-pressed="true"] {
+  color: var(--primary, #c9a36b);
+}
+
+/* ---------- the panel ---------- */
+.nb-panel {
+  position: fixed;
+  right: 44px;
+  top: 72px;
+  z-index: 9002;
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  max-width: calc(100vw - 56px);
+  max-height: calc(100vh - 96px);
+  border: 1px solid var(--border, #333);
+  border-radius: 14px;
+  /* the popover colour can be see-through (it is on phones): laid over the page background, the panel stays solid */
+  background-color: var(--background, #0f0f0f);
+  background-image: linear-gradient(var(--popover, var(--card, #141414)), var(--popover, var(--card, #141414)));
+  color: var(--popover-foreground, var(--foreground, #ddd));
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+  line-height: 1.45;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .nb-panel {
+    left: 8px;
+    right: 8px;
+    top: 60px;
+    width: auto;
+    max-width: none;
+    max-height: calc(var(--mari-visual-viewport-height, 100dvh) - 72px);
+  }
+}
+
+.nb-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 8px 14px;
+  border-bottom: 1px solid var(--border, #333);
+}
+.nb-title {
+  flex: 1;
+  font-weight: 600;
+}
+.nb-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted-foreground, #999);
+  cursor: pointer;
+}
+.nb-icon-btn:hover {
+  background: color-mix(in srgb, var(--foreground, #ddd) 10%, transparent);
+  color: var(--foreground, #ddd);
+}
+.nb-icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.nb-pin svg {
+  width: 15px;
+  height: 15px;
+}
+.nb-pin[aria-pressed="true"] {
+  color: var(--primary, #c9a36b);
+}
+.nb-pin[aria-pressed="true"] svg path:last-child {
+  fill: currentColor;
+}
+
+/* ---------- resizing (PC and tablet): the bottom edge and the bottom-left corner ---------- */
+.nb-grip-edge,
+.nb-grip-corner {
+  position: absolute;
+  z-index: 1;
+  touch-action: none;
+}
+.nb-grip-edge {
+  left: 18px;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  cursor: ns-resize;
+}
+.nb-grip-corner {
+  left: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: var(--muted-foreground, #999);
+  cursor: nesw-resize;
+  opacity: 0.6;
+}
+.nb-grip-corner:hover,
+.nb-panel.is-resizing .nb-grip-corner {
+  opacity: 1;
+}
+.nb-grip-corner svg {
+  width: 10px;
+  height: 10px;
+}
+.nb-panel.is-resizing {
+  -webkit-user-select: none;
+  user-select: none;
+}
+@media (max-width: 767px) {
+  .nb-grip-edge,
+  .nb-grip-corner {
+    display: none;
+  }
+}
+
+.nb-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 12px 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border, #333);
+  border-radius: 9px;
+  background: var(--card, #1b1b1b);
+  color: var(--muted-foreground, #999);
+}
+.nb-search svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+.nb-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--foreground, #ddd);
+  font: inherit;
+  font-size: 13px;
+}
+
+.nb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 12px 8px;
+}
+.nb-tag {
+  padding: 3px 10px;
+  border: 1px solid var(--border, #333);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--muted-foreground, #999);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.nb-tag:hover {
+  color: var(--foreground, #ddd);
+}
+.nb-tag.on {
+  border-color: var(--primary, #c9a36b);
+  background: var(--primary, #c9a36b);
+  color: var(--primary-foreground, #1a1408);
+}
+
+.nb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* grows into a panel made taller by hand */
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 4px 12px 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.nb-empty {
+  padding: 18px 6px;
+  color: var(--muted-foreground, #999);
+  font-size: 13px;
+  text-align: center;
+}
+.nb-error,
+.nb-foot-error {
+  color: var(--destructive, #e5484d);
+}
+.nb-link {
+  border: 0;
+  background: none;
+  color: var(--primary, #c9a36b);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- a card ---------- */
+.nb-card {
+  position: relative;
+  flex: none;
+  padding: 10px 40px 10px 12px;
+  border: 1px solid var(--border, #333);
+  border-radius: 10px;
+  background: var(--card, #1b1b1b);
+  color: var(--card-foreground, var(--foreground, #ddd));
+  cursor: pointer;
+}
+.nb-card:hover {
+  background: color-mix(in srgb, var(--foreground, #ddd) 5%, var(--card, #1b1b1b));
+}
+.nb-card.open {
+  border-color: var(--primary, #c9a36b);
+}
+.nb-name {
+  margin-bottom: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.nb-name-tag:not(:first-child) {
+  margin-left: 6px;
+}
+.nb-name-tag {
+  color: var(--muted-foreground, #999);
+  font-size: 11px;
+  font-weight: 400;
+}
+.nb-body {
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  opacity: 0.9;
+}
+.nb-card:not(.open) .nb-body {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.nb-card.open .nb-body {
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.nb-more {
+  display: none;
+  margin-top: 4px;
+  color: var(--primary, #c9a36b);
+  font-size: 11px;
+}
+.nb-card.long .nb-more {
+  display: block;
+}
+
+.nb-actions {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.nb-card.open .nb-actions,
+.nb-form .nb-actions {
+  display: flex;
+}
+.nb-ask {
+  margin-right: 4px;
+  font-size: 12px;
+}
+.nb-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--border, #333);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted-foreground, #999);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.nb-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--foreground, #ddd) 8%, transparent);
+  color: var(--foreground, #ddd);
+}
+.nb-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.nb-primary {
+  border-color: var(--primary, #c9a36b);
+  background: var(--primary, #c9a36b);
+  color: var(--primary-foreground, #1a1408);
+}
+.nb-primary:hover:not(:disabled) {
+  background: var(--primary, #c9a36b);
+  color: var(--primary-foreground, #1a1408);
+  filter: brightness(1.08);
+}
+.nb-danger {
+  border-color: var(--destructive, #e5484d);
+  color: var(--destructive, #e5484d);
+}
+
+.nb-copy {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted-foreground, #999);
+  cursor: pointer;
+}
+.nb-copy:hover {
+  background: color-mix(in srgb, var(--foreground, #ddd) 10%, transparent);
+  color: var(--foreground, #ddd);
+}
+.nb-copy svg {
+  width: 16px;
+  height: 16px;
+}
+.nb-card.copied .nb-copy {
+  color: #5fbf7a;
+}
+.nb-toast {
+  position: absolute;
+  top: 9px;
+  right: 40px;
+  max-width: calc(100% - 52px);
+  padding: 2px 8px;
+  border: 1px solid #3c5a44;
+  border-radius: 6px;
+  background: var(--popover, var(--card, #141414));
+  color: #5fbf7a;
+  font-size: 11px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.nb-card.copied .nb-toast,
+.nb-card.copy-failed .nb-toast {
+  opacity: 1;
+}
+.nb-card.copy-failed .nb-toast {
+  border-color: var(--destructive, #e5484d);
+  color: var(--destructive, #e5484d);
+}
+
+/* ---------- the edit form ---------- */
+.nb-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 12px;
+  border-color: var(--primary, #c9a36b);
+  cursor: default;
+}
+.nb-form:hover {
+  background: var(--card, #1b1b1b);
+}
+.nb-in {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border, #333);
+  border-radius: 7px;
+  outline: none;
+  background: var(--background, #0f0f0f);
+  color: var(--foreground, #ddd);
+  font: inherit;
+  font-size: 13px;
+}
+.nb-in:focus {
+  border-color: var(--primary, #c9a36b);
+}
+.nb-form-title {
+  font-weight: 600;
+}
+.nb-form-text {
+  min-height: 80px;
+  max-height: 50vh;
+  resize: vertical;
+}
+/* iOS zooms into a focused field under 16px */
+@media (pointer: coarse) {
+  .nb-in,
+  .nb-search-input {
+    font-size: 16px;
+  }
+}
+
+.nb-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border, #333);
+}
+.nb-foot-error {
+  font-size: 12px;
+}
+.nb-add {
+  width: 100%;
+  padding: 8px;
+  border: 1px dashed var(--border, #333);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted-foreground, #999);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.nb-add:hover:not(:disabled) {
+  border-color: var(--muted-foreground, #999);
+  color: var(--foreground, #ddd);
+}
+.nb-add:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.nb-copy-area {
+  position: fixed;
+  top: 0;
+  left: -9999px;
+  opacity: 0;
+  font-size: 16px;
+}
